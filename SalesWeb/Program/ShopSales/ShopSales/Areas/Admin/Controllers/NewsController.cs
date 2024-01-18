@@ -48,6 +48,7 @@ namespace ShopSales.Areas.Admin.Controllers
                 dbContext.News.Add(news);
                 dbContext.SaveChanges();
                 return RedirectToAction("Index");
+
             }
             else
             {
