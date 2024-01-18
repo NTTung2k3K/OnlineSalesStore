@@ -1,0 +1,233 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+
+@model IPagedList<ShopSales.Models.EF.Product>
+
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="row">
+    <a href="~/Admin/Product/Add" class="btn btn-sm btn-success" style="margin: 0 10px;">Add Product</a>
+    <a id="DeleteOption" class="btn btn-danger" style="margin: 0 10px;">Delete</a>
+</div>
+@using (Html.BeginForm("Index", "Product", FormMethod.Get, new { }))
+{
+    <div class="input-group input-group-sm col-md-3">
+        @Html.TextBox("Search", null, new { @class = "form-control", @placeholder = "Search" })
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-default btn-success">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+}
+< <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header row">
+                        <div class="col-md-6">
+                            <h3 class="card-title">Product Management</h3>
+                        </div>
+                        <div class=" col-md-6 row justify-content-end">
+                            <div style="display:flex; align-items:center;">
+                                <label for="selectAllInput" style="margin:0 10px;">Select All</label>
+                                <input id="selectAllInput" type="checkbox" class="" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="align-middle text-center">No</th>
+                                    <th>Product's Name</th>
+                                    <th style="text-align: center;">Image</th>
+                                    <th style="text-align: center;">Category</th>
+                                    <th style="text-align: center;">Quantity</th>
+                                    <th style="text-align: center;">Price</th>
+                                    <th style="text-align: center;">Price Sale</th>
+                                    <th style="text-align: center;">Create Date</th>
+                                    <th style="text-align: center;">Modified Date</th>
+                                    <th class="text-lg-center">State</th>
+                                    <th class="text-center">Setting</th>
+                                    <th style="text-align: center;">Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 0;
+                                    no = (((@ViewBag.page - 1) * (ViewBag.size)) + 1);
+
+                                    foreach (var i in Model)
+                                    {
+                                        string btn = i.isActive ? "<i id='icon-state'  class='fa-solid fa-circle-check text-success fa-2x'></i>" :
+                                            "<i id='icon-state' class='fa-solid fa-circle-xmark  text-danger fa-2x'></i>";
+                                <tr id="d_@i.ProductId">
+                                    <td class="align-middle text-center">@(no++)</td>
+                                    <td class="align-middle">@i.Title</td>
+                                    <td class="align-middle" style="text-align: center;"><img style="width:50px; " src="@i.Image" /></td>
+
+                                    <td class="align-middle" style="text-align: center;">@i.ProductCategory.Title</td>
+                                    <td class="align-middle" style="text-align: center;">@i.Quantity</td>
+
+                                    <td class="align-middle" style="text-align: center;">@string.Format("{0:0,0} đ", i.Price)</td>
+                                    @if (i.PriceSale != null)
+                                    {
+                                        <td class="align-middle" style="text-align: center;">@string.Format("{0:0,0} đ", i.PriceSale)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="align-middle" style="text-align: center;">NULL</td>
+                                    }
+                                    <td class="align-middle" style="text-align: center;">@i.CreateDate.ToString("dd/MM/yyyy")</td>
+                                    <td class="align-middle" style="text-align: center;">@i.ModifiedDate.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-lg-center align-middle">
+                                        <a id="id" class="btnState" data-id="@i.ProductId">
+                                            @Html.Raw(btn)
+                                        </a>
+                                    </td>
+
+                                    <td class="align-middle text-center">
+                                        <a href="~/Admin/Product/Edit?ProductId=@i.ProductId" class="btn btn-sm btn-success">Edit</a>
+                                        <button data-id="@i.ProductId" class="delete btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                    <td style="text-align: center;" class="align-middle">
+                                        <input value="@i.ProductId" type="checkbox" class="inputId w-8 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                    </td>
+                                </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="11">No Data</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+                        <div class="text-center">
+                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+@section script{
+    <script>
+
+
+
+        $(document).ready(function () {
+
+            $('#DeleteOption').on('click', function () {
+                var checkbox = $('.inputId');
+                var str = "";
+                var i = 0;
+                checkbox.each(function () {
+                    if ($(this).prop('checked')) {
+                        if (i === 0) {
+                            str += $(this).val();
+                        } else {
+                            str += ',' + $(this).val();
+                        }
+                        i++;
+                    }
+                })
+                $.ajax({
+                    url: '/Admin/Product/DeleteOption',
+                    type: 'POST',
+                    data: { stringId: str },
+                    success: function () {
+                        location.reload();
+                    }
+
+                })
+
+            })
+
+
+            $('#selectAllInput').on('change', function () {
+                var status = this.checked;
+                var checkbox = $('.inputId');
+                checkbox.each(function () {
+                    if (status) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                })
+
+            });
+
+
+
+
+
+            $('.delete').on('click', function () {
+                var ProductId = $(this).data('id')
+                var confir = confirm(`Do you want to delete it ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Product/Delete',
+                        type: 'POST',
+                        data: { ProductId: ProductId },
+                        success: function (rs) {
+                            if (rs.success == true) {
+                                $('#d_' + ProductId).remove();
+                            } else {
+                                alert("Error, please try again!");
+                            }
+                        }
+                    })
+                }
+
+            })
+        });
+
+
+
+
+
+        $('.btnState').on('click', function () {
+            var ProductId = $(this).data('id')
+            var btn = $(this);
+            var confir = confirm(`Do you want to change this state ?`)
+            if (confir === true) {
+                $.ajax({
+                    url: '/Admin/Product/IsActive',
+                    type: 'POST',
+                    data: { ProductId: ProductId },
+                    success: function (rs) {
+                        if (rs.success == false) {
+                            btn.html("<i id='icon-state'  class='fa-solid fa-circle-check text-success fa-2x'></i>")
+                        } else {
+                            btn.html("<i id='icon-state' class='fa-solid fa-circle-xmark  text-danger fa-2x'></i>")
+                        }
+                    }
+                })
+            }
+
+        })
+
+    </script>
+}
+

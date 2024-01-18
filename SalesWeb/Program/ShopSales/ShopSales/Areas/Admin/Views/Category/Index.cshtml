@@ -1,0 +1,94 @@
+﻿@model IEnumerable<ShopSales.Models.EF.Category>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="col-md-12">
+    <a href="~/Admin/Category/AddCategory" class="btn btn-sm btn-success">Add Category</a>
+</div>
+< <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">DataTable with minimal features & hover style</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Category's Name</th>
+                                    <th>Position</th>
+                                    <th>Setting</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 0;
+
+                                    foreach (var i in Model)
+                                    {
+                                        <tr id="d_@i.CategoryId">
+                                            <td>@(++no)</td>
+                                            <td>@i.Title</td>
+                                            <td>@i.Position</td>
+                                            <td>
+                                                <a href="~/Admin/Category/Edit?CategoryId=@i.CategoryId" class="btn btn-sm btn-success">Edit</a>
+                                                <button data-id="@i.CategoryId"   class="delete btn btn-sm btn-danger">Delete</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4">No Data</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+@section script{
+    <script>
+
+
+        $(document).ready(function () {
+            $('.delete').on('click', function () {
+                var CategoryId = $(this).data('id')
+                var confir = confirm(`Do you want to delete it ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Category/Delete',
+                        type: 'POST',
+                        data: { CategoryId: CategoryId },
+                        success: function (rs) {
+                            if (rs.success == true) {
+                                $('#d_' + CategoryId).remove();
+                            } else {
+                                alert("Error, please try again!");
+                            }
+                        }
+                    })
+                }
+                
+            })
+        })
+    </script>
+}

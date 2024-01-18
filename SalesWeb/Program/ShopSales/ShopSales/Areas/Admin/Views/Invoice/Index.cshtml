@@ -1,0 +1,259 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<ShopSales.Models.EF.Order>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <a id="DeleteOption" class="btn btn-danger" style="margin: 0 10px;">Delete</a>
+</div>
+@using (Html.BeginForm("Index", "Invoice", FormMethod.Post, new { }))
+{
+    <div class="input-group input-group-sm col-md-3">
+        @Html.TextBox("search", null, new { @class = "form-control", @placeholder = "Search" })
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-default btn-success">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+}
+< <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header row">
+                        <div class="col-md-6">
+                            <h3 class="card-title">Order Management</h3>
+                        </div>
+                        <div class=" col-md-6 row justify-content-end">
+                            <div style="display:flex; align-items:center;">
+                                <label for="selectAllInput" style="margin:0 10px;">Select All</label>
+                                <input id="selectAllInput" type="checkbox" class="" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="align-middle text-center">No</th>
+                                    <th>Order's Code</th>
+                                    <th style="text-align: center;">Customer name</th>
+                                    <th style="text-align: center;">Phone number</th>
+                                    <th style="text-align: center;">Email</th>
+                                    <th style="text-align: center;">Address</th>
+                                    <th style="text-align: center;">Total amount</th>
+                                    <th style="text-align: center;">Order's State</th>
+                                    <th style="text-align: center;">Create Date</th>
+                                    <th style="text-align: center;">Setting</th>
+
+                                    <th style="text-align: center;">Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 0;
+                                    no = (((@ViewBag.page - 1) * (ViewBag.size)) + 1);
+
+                                    foreach (var i in Model)
+                                    {
+
+                                <tr id="d_@i.OrderId">
+                                    <td class="align-middle text-center">@(no++)</td>
+                                    <td class="align-middle">@i.Code</td>
+                                    <td class="align-middle" style="text-align: center;">@i.CustomerName</td>
+                                    <td class="align-middle" style="text-align: center;">@i.Phone</td>
+                                    <td class="align-middle" style="text-align: center;">@i.Email</td>
+                                    <td class="align-middle" style="text-align: center;">@i.Address</td>
+                                    @{decimal total = 0;}
+                                    @foreach (var x in i.OrderDetails)
+                                    {
+                                        total += (x.Price * x.Quantity);
+                                    }
+
+                                    <td class="align-middle" style="text-align: center;">@string.Format("{0:0,0 đ}", total)</td>
+                                    <td class="align-middle" style="text-align: center;">@i.OrderState</td>
+
+                                    <td class="align-middle" style="text-align: center;">@i.CreateDate.ToString("dd/MM/yyyy")</td>
+
+
+                                    <td class="align-middle text-center">
+                                        <a href="~/Admin/Invoice/Detail?OrderId=@i.OrderId" class="btn btn-sm btn-success">Detail</a>
+                                        <button type="button" data-toggle="modal" data-target="#modal-default" style="margin:10px 0; background-color:chocolate; outline:none; color:white;" data-id="@i.OrderId" , class="btnIdUpdate btn btn-warning">Update</button>
+                                        <button data-id="@i.OrderId" class="delete btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                    <td style="text-align: center;" class="align-middle">
+                                        <input value="@i.OrderId" type="checkbox" class="inputId w-8 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                    </td>
+                                </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="11">No Data</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+                        <div class="text-center">
+                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Update Order's State</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <select class="col-md-12" id="orderSelection">
+                    <option>No paid</option>
+                    <option selected>Paid</option>
+                    <option>No receieve goods</option>
+                    <option>Cancel Order</option>
+                    <option>Back to store</option>
+                </select>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="btnUpdateOrder" type="button" class="btn btn-primary" style="background-color:green; color:white">Save</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+@section script{
+    <script>
+        var OrderId = 0;
+
+        $(document).ready(function () {
+            $('.btnIdUpdate').on('click', function () {
+                OrderId = $(this).data("id");
+            })
+            
+        })
+        $(document).ready(function () {
+            $('#btnUpdateOrder').on('click', function () {
+                var State = $("#orderSelection option:selected").text();
+                $.ajax({
+                    url: '/Admin/Invoice/UpdateState',
+                    type: 'POST',
+                    data: { OrderId: OrderId, State: State },
+                    success: function (rs) {
+                        if (rs.success == true) {
+                            location.reload();
+                        }
+                    }
+                })
+            })
+        })
+
+        $(document).ready(function () {
+
+            $('#DeleteOption').on('click', function () {
+                var checkbox = $('.inputId');
+                var str = "";
+                var i = 0;
+                checkbox.each(function () {
+                    if ($(this).prop('checked')) {
+                        if (i === 0) {
+                            str += $(this).val();
+                        } else {
+                            str += ',' + $(this).val();
+                        }
+                        i++;
+                    }
+                })
+                var confir = confirm(`Do you want to delete it ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Invoice/DeleteOption',
+                        type: 'POST',
+                        data: { stringId: str },
+                        success: function () {
+                            location.reload();
+                        }
+
+                    })
+                }
+
+            })
+
+
+            $('#selectAllInput').on('change', function () {
+                var status = this.checked;
+                var checkbox = $('.inputId');
+                checkbox.each(function () {
+                    if (status) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                })
+
+            });
+
+
+
+
+
+            $('.delete').on('click', function () {
+                var OrderId = $(this).data('id')
+                var confir = confirm(`Do you want to delete it ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Invoice/Delete',
+                        type: 'POST',
+                        data: { OrderId: OrderId },
+                        success: function (rs) {
+                            if (rs.success == true) {
+                                $('#d_' + OrderId).remove();
+                            } else {
+                                alert("Error, please try again!");
+                            }
+                        }
+                    })
+                }
+
+            })
+        });
+
+
+
+
+
+
+    </script>
+}
+

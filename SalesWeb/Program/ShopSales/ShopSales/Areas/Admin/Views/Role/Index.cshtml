@@ -1,0 +1,190 @@
+﻿@using Microsoft.AspNet.Identity.EntityFramework
+@using PagedList.Mvc;
+@using PagedList;
+
+@model IPagedList<IdentityRole>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="row">
+    <a href="~/Admin/Role/Add" class="btn btn-sm btn-success" style="margin: 0 10px;">Add Role</a>
+    <a id="DeleteOption" class="btn btn-danger" style="margin: 0 10px;">Delete</a>
+</div>
+@using (Html.BeginForm("Index", "Role", FormMethod.Get, new { }))
+{
+    <div class="input-group input-group-sm col-md-3">
+        @Html.TextBox("Search", null, new { @class = "form-control", @placeholder = "Search" })
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-default btn-success">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+}
+< <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header row">
+                        <div class="col-md-6">
+                            <h3 class="card-title">Role Management</h3>
+                        </div>
+                        <div class=" col-md-6 row justify-content-end">
+                            <div style="display:flex; align-items:center;">
+                                <label for="selectAllInput" style="margin:0 10px;">Select All</label>
+                                <input id="selectAllInput" type="checkbox" class="" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="align-middle text-center">No</th>
+                                    <th>Role's Name</th>
+                                    <th class="text-center">Setting</th>
+                                    <th style="text-align: center;">Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 0;
+                                    no = (((@ViewBag.page - 1) * (ViewBag.size)) + 1);
+
+                                    foreach (var i in Model)
+                                    {
+                                        <tr id="d_@i.Id">
+                                            <td class="align-middle text-center">@(no++)</td>
+                                            <td>@i.Name</td>
+                                            <td class="align-middle text-center">
+                                                <a href="~/Admin/Role/Edit?RoleId=@i.Id" class="btn btn-sm btn-success">Edit</a>
+                                                <button data-id="@i.Id" class="delete btn btn-sm btn-danger">Delete</button>
+                                            </td>
+                                            <td style="text-align: center;" class="align-middle">
+                                                <input value="@i.Id" type="checkbox" class="inputId w-8 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5">No Data</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+                        <div class="text-center">
+                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+@section script{
+    <script>
+
+
+
+        $(document).ready(function () {
+
+            $('#DeleteOption').on('click', function () {
+                var checkbox = $('.inputId');
+                var str = "";
+                var i = 0;
+                checkbox.each(function () {
+                    if ($(this).prop('checked')) {
+                        if (i === 0) {
+                            str += $(this).val();
+                        } else {
+                            str += ',' + $(this).val();
+                        }
+                        i++;
+                    }
+                })
+                $.ajax({
+                    url: '/Admin/Role/DeleteOption',
+                    type: 'POST',
+                    data: { stringId: str },
+                    success: function () {
+                        location.reload();
+                    }
+
+                })
+
+            })
+
+
+            $('#selectAllInput').on('change', function () {
+                var status = this.checked;
+                var checkbox = $('.inputId');
+                checkbox.each(function () {
+                    if (status) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                })
+
+            });
+
+
+            $('#selectAllInput').on('change', function () {
+                var status = this.checked;
+                var checkbox = $('.inputId');
+                checkbox.each(function () {
+                    if (status) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                })
+
+            });
+
+
+            $('.delete').on('click', function () {
+                var RoleId = $(this).data('id')
+                var confir = confirm(`Do you want to delete it ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Role/Delete',
+                        type: 'POST',
+                        data: { RoleId: RoleId },
+                        success: function (rs) {
+                            if (rs.success == true) {
+                                $('#d_' + RoleId).remove();
+                            } else {
+                                alert("Error, please try again!");
+                            }
+                        }
+                    })
+                }
+
+            })
+        });
+
+
+
+
+
+
+    </script>
+}
+

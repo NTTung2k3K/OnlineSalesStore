@@ -1,0 +1,108 @@
+﻿@model ShopSales.Models.EF.Order
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+< <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header row">
+                        <div class="col-md-6">
+                            <h3 class="card-title">Order Management</h3>
+                        </div>
+
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.LabelFor(x => x.Code, new { @class = "" })
+                                @Html.TextBoxFor(x => x.Code, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(x => x.Phone, new { @class = "" })
+                                @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(x => x.Email, new { @class = "" })
+                                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.LabelFor(x => x.Address, new { @class = "" })
+                                @Html.TextBoxFor(x => x.Address, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(x => x.Payment, new { @class = "" })
+                                @Html.TextBoxFor(x => x.Payment, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(x => x.CreateDate, new { @class = "" })
+                                @Html.TextBoxFor(x => x.CreateDate, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr class="text-center">
+                                    <td >NO</td>
+                                    <td>Code</td>
+                                    <td>Product's Name</td>
+                                    <td>Product Image</td>
+                                    <td>Product's Price</td>
+                                    <td>Quantity</td>
+                                    <td>TotalAmount</td>
+                                    <td>Product's Category</td>
+                                    <td>Order's State</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{int no = 0;}
+                                @{decimal total = 0;}
+
+                                @foreach (var i in Model.OrderDetails)
+                                {
+                                    no+= 1;
+                                    <tr class="text-center"> 
+                                        <td>@no</td>
+                                        <td>#@i.Product.ProductCode</td>
+                                        <td>@i.Product.Title</td>
+                                        <td>
+                                            <img style="width:80px; height:80px;" src="@i.Product.Image" />
+                                        </td>
+
+                                        <td>@string.Format("{0:0,0} đ", i.Product.Price)</td>
+                                        <td>@i.Product.Quantity</td>
+                                        <td>@string.Format("{0:0,0} đ", i.Product.Price * i.Product.Quantity)</td>
+                                        <td>@i.Product.ProductCategory.Title</td>
+                                        <td>@Model.OrderState</td>
+
+                                    </tr>
+                                    total += (i.Product.Price * i.Product.Quantity);
+                                }
+                                <tr class="text-center"> <td>Total: <span style="color:orange; font-weight:bold;">@string.Format("{0:0,0} đ", total)</span></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <a href="/Admin/Invoice/Index" class="btn btn-success">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>

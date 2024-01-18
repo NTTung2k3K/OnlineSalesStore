@@ -1,0 +1,49 @@
+Create a Migration to create database
+Step 1: Tool-Nuget manage - console
+Step 2: Enable-Migrations
+Step 3: Add-Migration -> Name: CreatedDatabase
+Step 4: Update-Database
+
+Connection String 
+ <connectionStrings>
+    <add name="DefaultConnection" connectionString="Data Source=LAPTOP-AEVH89JM\TUNGK;AttachDbFilename=|DataDirectory|\aspnet-ShopSales-20231223114159.mdf;Initial Catalog=ShopSales;Integrated Security=True"
+      providerName="System.Data.SqlClient" />
+  </connectionStrings>
+
+Initial Catalog: NameDatabase
+Data Source: ServerName
+
+After change any in database you must: Add-_____ and then Update-Database
+
+Using Ckeditor,CKfinder,
+Step 1: download 2 folder
+Step 2: add ckeditor and ckfinder script in 2 folder
+Step 3: Add references move to ckfinder - Bin - Debug - Select CKFinder.dll
+Step 4: replace js below 
+Important: Using TextAreaFor function to insert CKEditor
+ <script>
+        $(document).ready(function () {
+            CKEDITOR.replace('txtDetail', {
+                customConfig: '/Content/CK/ckeditor/config.js',
+                extraAllowedControl: 'span',
+            });
+        })
+</script>
+with txtDetail is a Id of div tag
+
+Using browse input file by CKfinder
+
+<div class="custom-file">
+                            @Html.TextBoxFor(x => x.Image, new { @class = "form-control", @id = "txtImage" })
+</div>
+<div class="input-group-append">
+                            <input type="button" value="Browse" onclick="BroserServer('txtImage')" />
+</div>
+
+function BroserServer(field) {
+            var finder = new CKFinder();
+            finder.selectActionFunction = function(fileUrl){
+                document.getElementById(field).value = fileUrl;
+            };
+            finder.popup();
+}

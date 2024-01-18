@@ -1,0 +1,213 @@
+﻿@model ShopSales.Models.OrderViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+
+
+<div class="fs_menu_overlay"></div>
+
+<!-- Hamburger Menu -->
+
+<div class="hamburger_menu">
+    <div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
+    <div class="hamburger_menu_content text-right">
+        <ul class="menu_top_nav">
+            <li class="menu_item has-children">
+                <a href="#">
+                    usd
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="menu_selection">
+                    <li><a href="#">cad</a></li>
+                    <li><a href="#">aud</a></li>
+                    <li><a href="#">eur</a></li>
+                    <li><a href="#">gbp</a></li>
+                </ul>
+            </li>
+            <li class="menu_item has-children">
+                <a href="#">
+                    English
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="menu_selection">
+                    <li><a href="#">French</a></li>
+                    <li><a href="#">Italian</a></li>
+                    <li><a href="#">German</a></li>
+                    <li><a href="#">Spanish</a></li>
+                </ul>
+            </li>
+            <li class="menu_item has-children">
+                <a href="#">
+                    My Account
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="menu_selection">
+                    <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+                    <li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+                </ul>
+            </li>
+            <li class="menu_item"><a href="#">home</a></li>
+            <li class="menu_item"><a href="#">shop</a></li>
+            <li class="menu_item"><a href="#">promotion</a></li>
+            <li class="menu_item"><a href="#">pages</a></li>
+            <li class="menu_item"><a href="#">blog</a></li>
+            <li class="menu_item"><a href="#">contact</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container contact_container" style="margin-top: 12%;">
+    <div class="row">
+        <div class="col">
+
+            <!-- Breadcrumbs -->
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul class="d-flex justify-content-around">
+                    <li><a href="/product" style="margin:0 10px"> Product</a></li>
+                    <li class="active"><a style="margin:0 0px" href="/shopping-cart"><i style="margin:0 15px" class="fa fa-angle-right success" aria-hidden="true"></i>Shopping Cart</a></li>
+                    <li class="active"><a style="margin:0 0px" href="/pay"><i style="margin:0 15px" class="fa fa-angle-right success" aria-hidden="true"></i>Order</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+<h1 class="text-center" style="color:orange; margin-bottom:20px;">PAY</h1>
+
+@if (Model == null)
+{
+    <div>
+        @using (Ajax.BeginForm("Index", "Pay", new AjaxOptions
+        {
+            HttpMethod = "POST",
+            UpdateTargetId = "load_data",
+            OnComplete = "PaySuccess",
+            OnFailure = "PayFailure",
+            OnBegin = "OnBegin"
+        }))
+        {
+
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col-md-8">
+                        <div class="text-center" style="color:red;">
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(false)
+                        </div>
+                        <h3 style="margin-bottom:30px;">Customer's Information</h3>
+                        <div class="form-group">
+                            <label class="form-check-label text-left" style="width:150px;">Name</label>
+                            <input class="w-50" style="color:orange;" type="text" name="name" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-check-labe  text-leftl" style="width:150px;">Phone Number</label>
+                            <input class="w-50" style="color:orange;" type="text" name="phoneNumber" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-check-label  text-left" style="width:150px;">Email</label>
+                            <input class="w-50" style="color:orange;" type="email" name="email" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-check-label  text-left" style="width:150px;">Address</label>
+                            <input class="w-50" style="color:orange;" type="text" name="address" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-check-label  text-left" style="width:150px;">Payment method</label>
+                            <select class="w-50" name="payment">
+                                <option selected>COD</option>
+                                <option>Transfer</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    @if (@ViewBag.Cart != null)
+                    {
+                        <div class="col-md-4">
+                            <h4 class="text-center" style="margin-bottom:30px;">Product</h4>
+                            <div style="border: 1px solid;">
+                                @{var total = 0; }
+
+                                @foreach (var i in @ViewBag.Cart)
+                                {
+
+                                    <a href="/Product/DetailProduct?ProductId=@i.ProductId">
+
+                                        <div class="d-flex" style="justify-content:space-around; align-items: center; margin: 20px 0px;">
+                                            <a href="/Product/DetailProduct?ProductId=@i.ProductId" style="color:black;">@i.ProductName</a>
+                                            <img style="width:80px; height:80px;" src="@i.ProductImage" />
+                                            <p style="margin:0 10px;">@i.Quantity</p>
+                                            <p style="color:orange; margin:0 10px;"> @String.Format("{0:0,0} đ", i.TotalAmount)</p>
+
+                                        </div>
+                                    </a>
+                                    total += i.TotalAmount;
+
+
+                                }
+
+
+                            </div>
+
+                            <div>Total:<span class="Bold" style="color:orange; font-weight:bold;">@String.Format("{0:0,0} đ", total)</span></div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center" style="margin:20px 0;">
+                <button class="Btn text-center" style="margin:0 10px;">
+                    Pay
+                    <svg class="svgIcon" viewBox="0 0 576 512"><path d="M512 80c8.8 0 16 7.2 16 16v32H48V96c0-8.8 7.2-16 16-16H512zm16 144V416c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V224H528zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm56 304c-13.3 0-24 10.7-24 24s10.7 24 24 24h48c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm128 0c-13.3 0-24 10.7-24 24s10.7 24 24 24H360c13.3 0 24-10.7 24-24s-10.7-24-24-24H248z"></path></svg>
+                </button>
+                <a href="/product">
+                    <span class="box">
+                        Cancel
+                    </span>
+                </a>
+            </div>
+        }
+
+    </div>
+}
+else
+if (@ViewBag.Cart == null || @ViewBag.Cart.Count == 0)
+{
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h3 style="color:orange;">No product</h3>
+                <a href="/product">coutinue buy</a>
+            </div>
+        </div>
+    </div>
+
+}
+<div id="page" style=" position:fixed; top:50%; right:50%; z-index:10;">
+    <div id="container">
+        <div id="ring"></div>
+        <div id="ring"></div>
+        <div id="ring"></div>
+        <div id="ring"></div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        $(document).ready(function () {
+            $(".Btn").click(function (e) {
+                OnBegin();
+            });
+
+            function OnBegin() {
+
+                $('body').css("background-color", "#bfbfd5")
+
+                $("#page").show();
+            }
+        });
+    </script>
+}
+

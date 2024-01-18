@@ -1,0 +1,8 @@
+﻿@model IEnumerable<ShopSales.Models.EF.ProductCategory>
+
+<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked" data-filter="*">all</li>
+@foreach (var i in Model)
+{
+    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".@i.Alias">@i.Title</li>
+}
+

@@ -1,0 +1,114 @@
+﻿@model ShopSales.Models.EF.SystemSetting
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div style="color:green;" id="text-status"> @ViewBag.Status</div>
+
+
+@using (Ajax.BeginForm("Index", "Setting", new AjaxOptions { OnBegin = "OnBegin", OnComplete = "OnComplete", OnFailure = "OnFailure" }))
+{
+    @Html.ValidationSummary(false)
+    @Html.AntiForgeryToken()
+
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Category Management</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <div class="card-body">
+            <div class="form-group row">
+                @Html.LabelFor(x => x.SettingTitle)
+                @Html.TextBoxFor(x => x.SettingTitle, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.SettingTitle, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.SettingEmail)
+                @Html.TextBoxFor(x => x.SettingEmail, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.SettingEmail, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.SettingHotline)
+                @Html.TextBoxFor(x => x.SettingHotline, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.SettingHotline, null, new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label for="exampleInputFile">Logo</label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            @Html.TextBoxFor(x => x.SettingLogo, new { @class = "form-control", @id = "txtImage" })
+                        </div>
+                        <div class="input-group-append">
+                            <input style="width:100%;" type="button" value="Browse" onclick="BroserServer('txtImage')" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.SettingTitleSeo)
+                @Html.TextBoxFor(x => x.SettingTitleSeo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.SettingTitleSeo, null, new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.SettingDesSeo)
+                @Html.TextBoxFor(x => x.SettingDesSeo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.SettingDesSeo, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.SettingKeySeo)
+                @Html.TextBoxFor(x => x.SettingKeySeo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.SettingKeySeo, null, new { @class = "text-danger" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.LinkFacebook)
+                @Html.TextBoxFor(x => x.LinkFacebook, new { @class = "form-control" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.LinkTwitter)
+                @Html.TextBoxFor(x => x.LinkTwitter, new { @class = "form-control" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.LinkPinterest)
+                @Html.TextBoxFor(x => x.LinkPinterest, new { @class = "form-control" })
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(x => x.LinkSkype)
+                @Html.TextBoxFor(x => x.LinkSkype, new { @class = "form-control" })
+            </div>
+
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            <button type="submit" class="btn btn-success float-left" style="background-color:green; color:white;">Edit</button>
+
+            <a href="~/Admin/Home/Index" class="btn btn-info float-right">Back To Home</a>
+        </div>
+        <!-- /.card-footer -->
+    </div>
+
+
+}
+
+@section script{
+    <script>
+        function BroserServer(field) {
+            var finder = new CKFinder();
+            finder.selectActionFunction = function (fileUrl) {
+                document.getElementById(field).value = fileUrl;
+            };
+            finder.popup();
+        }
+        function OnBegin() {
+            $("#text-status").html("Update...")
+        }
+        function OnComplete() {
+            $("#text-status").html("")
+        }
+    </script>
+}

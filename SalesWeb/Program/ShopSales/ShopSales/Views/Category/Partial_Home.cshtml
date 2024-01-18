@@ -1,0 +1,6 @@
+﻿@model IEnumerable<ShopSales.Models.EF.Category>
+
+@foreach (var i in Model)
+{
+    <li><a href="/@i.Alias">@i.Title.ToUpper()</a></li>
+}

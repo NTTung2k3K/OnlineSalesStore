@@ -1,0 +1,11 @@
+﻿@model ShopSales.Models.EF.ProductCategory
+
+@if (Model != null)
+{
+    <li><a href="/Product">Product</a></li>
+    <li class="active"><a href="/list-of-products/@Model.Alias-@Model.ProductCategoryId"><i class="fa fa-angle-right" aria-hidden="true"></i>@Model.Title</a></li>
+}
+else
+{
+    <li><a href="/Product">Product</a></li>
+}

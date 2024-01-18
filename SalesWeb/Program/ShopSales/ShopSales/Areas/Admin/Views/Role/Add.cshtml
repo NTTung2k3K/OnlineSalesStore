@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity.EntityFramework
+@model IdentityRole
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+
+@using (Html.BeginForm("Add", "Role", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false)
+
+    <!-- Horizontal Form -->
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="text-center card-title">Roles Management</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form class="form-horizontal">
+            <div class="card-body">
+                <div class="col-md-12">
+                   
+                    <div class="form-group row ">
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Name</label>
+                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @placeholder = "Name" })
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <button id="aaa" type="submit" style="background-color:green; color:white;" class="btn  btn-success float-left">Create</button>
+
+                    <a href="~/Admin/Role/Index" class="btn btn-info float-right">Cancel</a>
+                </div>
+                <!-- /.card-footer -->
+        </form>
+    </div> <!-- /.card -->
+
+
+}

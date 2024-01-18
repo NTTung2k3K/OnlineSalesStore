@@ -1,0 +1,128 @@
+﻿@model IEnumerable<ShopSales.Models.EF.Post>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="col-md-12">
+    <a href="~/Admin/Post/AddPost" class="btn btn-sm btn-success">Add Post</a>
+</div>
+< <section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Posts Management</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Post's Name</th>
+                                    <th style="text-align: center;">Image</th>
+                                    <th class="text-lg-center">State</th>
+                                    <th>Setting</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    int no = 0;
+                                    foreach (var i in Model)
+                                    {
+                                        string btn = i.isActive ? "<i id='icon-state'  class='fa-solid fa-circle-check text-success fa-2x'></i>" :
+                                            "<i id='icon-state' class='fa-solid fa-circle-xmark  text-danger fa-2x'></i>";
+
+                                        <tr id="d_@i.PostId">
+                                            <td>@(++no)</td>
+                                            <td>@i.Title</td>
+                                            <td class=" d-flex text-center align-items-center justify-content-center" style="text-align: center;"><img style="width:50px; " src="@i.Image" /></td>
+                                            <td class="text-lg-center align-middle">
+                                                <a id="id" class="btnState" data-id="@i.PostId">
+                                                    @Html.Raw(btn)
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="~/Admin/Role/Edit?PostId=@i.PostId" class="btn btn-sm btn-success">Edit</a>
+                                                <button data-id="@i.PostId" class="delete btn btn-sm btn-danger">Delete</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5">No Data</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+@section script{
+    <script>
+
+
+
+        $(document).ready(function () {
+            $('.delete').on('click', function () {
+                var PostId = $(this).data('id')
+                var confir = confirm(`Do you want to delete it ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Post/Delete',
+                        type: 'POST',
+                        data: { PostId: PostId },
+                        success: function (rs) {
+                            if (rs.success == true) {
+                                $('#d_' + PostId).remove();
+                            } else {
+                                alert("Error, please try again!");
+                            }
+                        }
+                    })
+                }
+
+            })
+        });
+
+        $(document).ready(function () {
+            $('.btnState').on('click', function () {
+                var PostId = $(this).data('id')
+                var btn = $(this);
+                var confir = confirm(`Do you want to change this state ?`)
+                if (confir === true) {
+                    $.ajax({
+                        url: '/Admin/Post/IsActive',
+                        type: 'POST',
+                        data: { PostId: PostId },
+                        success: function (rs) {
+                            if (rs.IsActive == true) {
+                                btn.html("<i id='icon-state'  class='fa-solid fa-circle-check text-success fa-2x'></i>")
+                            } else {
+                                btn.html("<i id='icon-state' class='fa-solid fa-circle-xmark  text-danger fa-2x'></i>")
+                            }
+                        }
+                    })
+                }
+
+            })
+        })
+
+    </script>
+}
+

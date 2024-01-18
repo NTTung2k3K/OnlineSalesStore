@@ -1,0 +1,193 @@
+﻿@model IEnumerable<ShopSales.Models.ShoppingCartItem>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+
+
+<div class="fs_menu_overlay"></div>
+
+<!-- Hamburger Menu -->
+
+<div class="hamburger_menu">
+    <div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
+    <div class="hamburger_menu_content text-right">
+        <ul class="menu_top_nav">
+            <li class="menu_item has-children">
+                <a href="#">
+                    usd
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="menu_selection">
+                    <li><a href="#">cad</a></li>
+                    <li><a href="#">aud</a></li>
+                    <li><a href="#">eur</a></li>
+                    <li><a href="#">gbp</a></li>
+                </ul>
+            </li>
+            <li class="menu_item has-children">
+                <a href="#">
+                    English
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="menu_selection">
+                    <li><a href="#">French</a></li>
+                    <li><a href="#">Italian</a></li>
+                    <li><a href="#">German</a></li>
+                    <li><a href="#">Spanish</a></li>
+                </ul>
+            </li>
+            <li class="menu_item has-children">
+                <a href="#">
+                    My Account
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="menu_selection">
+                    <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
+                    <li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+                </ul>
+            </li>
+            <li class="menu_item"><a href="#">home</a></li>
+            <li class="menu_item"><a href="#">shop</a></li>
+            <li class="menu_item"><a href="#">promotion</a></li>
+            <li class="menu_item"><a href="#">pages</a></li>
+            <li class="menu_item"><a href="#">blog</a></li>
+            <li class="menu_item"><a href="#">contact</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container contact_container" style="margin-top: 12%;">
+    <div class="row">
+        <div class="col">
+
+            <!-- Breadcrumbs -->
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul class="d-flex justify-content-around">
+                    <li><a href="/product" style="margin:0 10px"> Product</a></li>
+                    <li class="active"><a style="margin:0 0px" href="/shopping-cart"><i style="margin:0 15px" class="fa fa-angle-right success" aria-hidden="true"></i>Shopping Cart</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Map Container -->
+
+    <div class="row">
+        <div class="col">
+            <div class="single_product_pics">
+                <div class="row">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">
+                                    Product's Name
+                                </th>
+                                <th class="text-center">
+                                    Image
+                                </th>
+                                <th class="text-center">
+                                    Quantity
+                                </th>
+                                <th class="text-center">
+                                    Price
+                                </th>
+                                <th class="text-center">
+                                    TotalAmount
+                                </th>
+                                <th class="text-center">
+                                    Setting
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                decimal total = 0;
+
+                                foreach (var i in Model)
+                                {
+                                    decimal primaryPrice = 1;
+                                    <tr>
+                                        <td class="text-center">
+
+                                            <a href="/Product/DetailProduct?ProductId=@i.ProductId">@i.ProductName</a>
+                                        </td>
+                                        <td class="text-center">
+                                            <img src="@i.ProductImage" style="width: 80px; height: 80px;" />
+                                        </td>
+                                        <td class="text-center" id="QuantityOfProduct">
+                                            <input style="width:50px; color:orange; text-align:center;" id="QuantityOfProduct_@i.ProductId" type="number" value="@i.Quantity" />
+                                        </td>
+                                        @if (i.PriceSale != null && i.PriceSale != 0)
+                                        {
+                                            primaryPrice = i.PriceSale*i.Quantity;
+                                            <td class="text-center">
+                                                @String.Format("{0:0,0} đ", i.PriceSale)
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            primaryPrice = i.Price*i.Quantity;
+                                            <td class="text-center">
+                                                @String.Format("{0:0,0} đ", i.Price)
+                                            </td>
+                                        }
+
+                                        <td class="text-center">
+                                            @String.Format("{0:0,0} đ", primaryPrice)
+                                        </td>
+                                        <td class="text-center">
+                                            <a id="btnDelete" data-id="@i.ProductId" class="btn btn-danger" style="color: white;">Delete</a>
+                                            <a id="btnUpdate" data-id="@i.ProductId" class="btn btn-success" style="color: white;">Update</a>
+                                        </td>
+                                    </tr>
+                                    total += i.TotalAmount;
+                                }
+
+                                <tr class="text-md-right" style="">
+                                    <td colspan="6">
+                                        Total:<span style="color:red; font-weight:bold; margin:0 10px;">
+                                            @String.Format("{0:0,0} đ", total)
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr class="" >
+                                    <td colspan="6" class="text-center">
+                                        <a href="/pay" id="btnPay" class="Btn" style="margin:0 10px; display:inline-flex;">
+                                            Pay
+                                            <svg class="svgIcon" viewBox="0 0 576 512"><path d="M512 80c8.8 0 16 7.2 16 16v32H48V96c0-8.8 7.2-16 16-16H512zm16 144V416c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V224H528zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm56 304c-13.3 0-24 10.7-24 24s10.7 24 24 24h48c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm128 0c-13.3 0-24 10.7-24 24s10.7 24 24 24H360c13.3 0 24-10.7 24-24s-10.7-24-24-24H248z"></path></svg>
+                                        </a>
+                                        <a id="btnDeleteAll" style="display:inline-flex;" >
+                                            <span class="box">
+                                                Delete All!
+                                            </span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <th>
+                                        No data
+                                        <a href="/product">coutinue buy</a>
+                                    </th>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script src="~/Content/User/js/jsShoppingCart.js"></script>
+}

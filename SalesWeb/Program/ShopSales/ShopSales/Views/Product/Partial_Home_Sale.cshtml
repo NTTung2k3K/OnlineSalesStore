@@ -1,0 +1,37 @@
+﻿
+@model IEnumerable<ShopSales.Models.EF.Product>
+@if (Model != null && Model.Any())
+{
+    foreach (var i in Model)
+    {
+        var strImage = i.Image == null ? "" : i.Image;
+
+        <div class="owl-item product_slider_item">
+            <a href="/Product/DetailProduct?ProductId=@i.ProductId">
+                <div class="product-item men">
+                    <div class="product">
+                        <div class="product_image">
+                            <img style="height:221px; width:221px;" src="@strImage" alt="">
+                        </div>
+                        @if (i.isSale)
+                        {
+                            <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
+                        }
+                        @if (i.isNew)
+                        {
+                            <div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center"><span>new</span></div>
+                        }
+
+                        <div class="product_info">
+                            <h6 class="product_name"><a href="/Product/DetailProduct?ProductId=@i.ProductId">@i.Title</a></h6>
+
+                            <div class="product_price">@String.Format("{0:0,0} đ", i.PriceSale)<span>@String.Format("{0:0,0} đ", i.Price)</span></div>
+
+                            <div class="product_price"></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+}

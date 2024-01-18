@@ -1,0 +1,108 @@
+﻿@model ShopSales.Models.EF.News
+@{
+    ViewBag.Title = "AddNews";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>AddNews</h2>
+@using (Html.BeginForm("AddNews", "News", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false)
+
+    <!-- Horizontal Form -->
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="text-center card-title">News Management</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form class="form-horizontal">
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+                        @Html.TextBoxFor(x => x.Title, new { @class = "form-control", @placeholder = "Name" })
+                        @Html.ValidationMessageFor(x => x.Title, null, new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group row ">
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Description</label>
+                        @Html.TextAreaFor(x => x.Description, new { @class = "form-control", @placeholder = "Description" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputFile">Image</label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            @Html.TextBoxFor(x => x.Image, new { @class = "form-control", @id = "txtImage" })
+                        </div>
+                        <div class="input-group-append">
+                            <input type="button" value="Browse" onclick="BroserServer('txtImage')" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group ">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">Detail</label>
+                    @Html.TextAreaFor(x => x.Detail, new { @id = "txtDetail", @class = "form-control", @placeholder = "Position" })
+
+                </div>
+                <div class="form-group row ">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">Seo Name</label>
+                    @Html.TextBoxFor(x => x.SeoTitle, new { @class = "form-control", @placeholder = "Seo Name" })
+                    @Html.ValidationMessageFor(x => x.SeoTitle, null, new { @class = "text-danger" })
+                </div>
+                <div class="form-group row ">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">Seo Descripiton</label>
+                    @Html.TextAreaFor(x => x.SeoDescripiton, new { @class = "form-control", @placeholder = "Seo Description" })
+                </div>
+                <div class="form-group row ">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">Seo Keywords</label>
+                    @Html.TextAreaFor(x => x.SeoKeyword, new { @class = "form-control", @placeholder = "Seo keywords" })
+
+                </div>
+                <div class="form-group row">
+                    <label for="inputPassword3" class="col-sm-2 col-form-label">State</label>
+                    <div>
+                        @Html.CheckBoxFor(x => x.IsActive, new { @class = "form-control", @placeholder = "State" })
+                        Active
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <button id="aaa" type="submit" class="btn  btn-success float-left">Create</button>
+
+                    <a href="~/Admin/News/Index" class="btn btn-info float-right">Cancel</a>
+                </div>
+                <!-- /.card-footer -->
+        </form>
+    </div> <!-- /.card -->
+
+
+}
+@section script{
+    <script>
+        $(document).ready(function () {
+            CKEDITOR.replace('txtDetail', {
+                customConfig: '/Content/CK/ckeditor/config.js',
+                extraAllowedControl: 'span',
+            });
+        })
+
+        function BroserServer(field) {
+            var finder = new CKFinder();
+            finder.selectActionFunction = function (fileUrl) {
+                document.getElementById(field).value = fileUrl;
+            };
+            finder.popup();
+        }
+        $('#aaa').on('click', function () {
+            var ckeditorContent = CKEDITOR.instances['txtDetail'].getData();
+            var a = $("#txtDetail").val(ckeditorContent);
+            console.log(ckeditorContent);
+        })
+    </script>
+
+
+}
