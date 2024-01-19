@@ -24,7 +24,7 @@ namespace ShopSales.Controllers
             ViewBag.size = size;
             ViewBag.page = page;
             var PageQuantity = page.HasValue ? Convert.ToInt32(page) : 1;
-            var data = dBContext.Products.ToList();
+            var data = dBContext.Products.Where(x=> x.Quantity>0 ).ToList();
             if (ProductCategoryId != null)
             {
                 data = data.Where(x => x.ProductCategoryId == ProductCategoryId).ToList();
@@ -37,19 +37,19 @@ namespace ShopSales.Controllers
             var data = dBContext.Products.ToList();
             if (ProductCategoryId != null)
             {
-                data = data.Where(x => x.ProductCategoryId == ProductCategoryId).ToList();
+                data = data.Where(x => x.ProductCategoryId == ProductCategoryId && x.Quantity>0 ).ToList();
                 ViewBag.ProductCategoryId = ProductCategoryId;
             }
             return View(data);
         }
         public ActionResult Partial_Home()
         {
-            var data = dBContext.Products.Include("ProductImages").Where(x=> x.isHome==true && x.isSell==true && x.isActive == true ).Take(20).ToList();
+            var data = dBContext.Products.Include("ProductImages").Where(x=> x.isHome==true && x.isSell==true && x.isActive == true && x.Quantity>0 ).Take(20).ToList();
             return PartialView("Partial_Home", data);
         }
         public ActionResult Partial_Home_Sale()
         {
-            var data = dBContext.Products.Include("ProductImages").Where(x => x.isHome == true && x.isSell == true && x.isSale==true && x.isActive == true).Take(20).ToList();
+            var data = dBContext.Products.Include("ProductImages").Where(x => x.isHome == true && x.isSell == true && x.isSale==true && x.isActive == true && x.Quantity > 0).Take(20).ToList();
             return PartialView("Partial_Home_Sale", data);
         }
         public ActionResult Parial_Product_Nav(int? ProductCategoryId)

@@ -94,9 +94,9 @@ namespace ShopSales.Controllers
                     var product = dBContext.Products.Find(i.ProductId);
                     product.Quantity -= i.Quantity;
                 }
-                
-
                 Cart.Clear();
+
+
                 dBContext.SaveChanges();
                 return RedirectToAction("OrderSuccess");
             }

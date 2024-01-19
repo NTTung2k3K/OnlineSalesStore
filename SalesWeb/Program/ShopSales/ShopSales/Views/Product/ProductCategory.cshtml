@@ -208,16 +208,34 @@
                                                 <div class="product_image">
                                                     <img style="width:218px; height:218px;" src="@strImage" alt="@strImage">
                                                 </div>
-                                                <div class="favorite favorite_left"></div>
-                                                <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-sale</span></div>
+                                                @if (i.isSale)
+                                                {
+                                                    float saleCal = (float)((i.Price - i.PriceSale) / i.Price) * 100;
+                                                    int satePercent = (int)Math.Ceiling(saleCal);
+
+                                                    <div class="favorite favorite_left"></div>
+                                                    <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-@satePercent%</span></div>
+                                                }
+                                                else if (i.isNew)
+                                                {
+                                                    <div class="favorite"></div>
+                                                    <div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center"><span>new</span></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="favorite"></div>
+                                                }
                                                 <div class="product_info">
                                                     <h6 class="product_name"><a href="single.html">@i.Title</a></h6>
-                                                    <div class="product_price">
-                                                        @string.Format("{0:0,0} đ", i.PriceSale)
-                                                        <span>
-                                                            @string.Format("{0:0,0} đ", i.Price)
-                                                        </span>
-                                                    </div>
+                                                    @if (i.PriceSale != null)
+                                                    {
+                                                        <div class="product_price">@String.Format("{0:0,0} đ", i.PriceSale).ToString()<span>@String.Format("{0:0,0} đ", i.Price).ToString()</span></div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product_price">@String.Format("{0:0,0} đ", i.Price).ToString()</div>
+                                                    }
+
                                                 </div>
                                             </div>
                                             <div class="red_button add_to_cart_button"><a href="#">add to cart</a></div>
