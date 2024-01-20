@@ -224,7 +224,7 @@
                                                         <div class="favorite"></div>
                                                     }
                                                     <div class="product_info">
-                                                        <h6 class="product_name"><a href="single.html">@i.Title</a></h6>
+                                                        <h6 class="product_name"><a href="/Product/DetailProduct?ProductId=@i.ProductId">@i.Title</a></h6>
                                                         @if (i.PriceSale != null)
                                                         {
                                                             <div class="product_price">@String.Format("{0:0,0} đ", i.PriceSale).ToString()<span>@String.Format("{0:0,0} đ", i.Price).ToString()</span></div>
